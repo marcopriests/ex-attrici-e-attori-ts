@@ -80,6 +80,29 @@ async function getActress(id: number): Promise<Actress | null> {
   }
 };
 
+async function getAllActresses(): Promise<Actress[]> {
+  try {
+    const res = await fetch(`http://localhost:3333/actresses`);
+    if (!res.ok) {
+      throw new Error(`Errore HTTP ${res.status}: ${res.statusText}`);
+    }
+    const dati: unknown = await res.json();
+
+    if (!(dati instanceof Array)) {
+      throw new Error('Formato dati non valido: non è un array!');
+    }
+    const attriciValide: Actress[] = dati.filter(a => isActress(a));
+    return attriciValide;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Errore durante il recupero dell\'attrice: ', error);
+    } else {
+      console.error('Errore sconosciuto: ', error);
+    }
+    return [];
+  }
+}
+
 /*
 📌 Milestone 1
 
